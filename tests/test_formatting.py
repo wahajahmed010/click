@@ -122,6 +122,28 @@ def test_wrapping_long_command_name(runner):
     ]
 
 
+def test_wrapping_does_not_break_usage_at_hyphens(runner):
+    """Options with hyphens in their names should not be split at hyphens."""
+    options = [
+        "--enable-verbose-logging",
+        "--output-file-path",
+        "--max-retry-count",
+        "--disable-cache-mode",
+        "--config-file-location",
+        "--user-auth-token",
+        "--auto-update-interval",
+        "--force-overwrite-existing",
+        "--network-timeout-seconds",
+        "--debug-trace-enabled",
+    ]
+
+    f = click.HelpFormatter(width=65)
+    f.write_usage("program", " ".join(options))
+    output = f.getvalue()
+    for line in output.splitlines():
+        assert not line.endswith("-"), f"Line '{line}' ends with a hyphen"
+
+
 def test_formatting_empty_help_lines(runner):
     @click.command()
     def cli():
