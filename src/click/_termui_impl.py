@@ -352,6 +352,13 @@ class ProgressBar(t.Generic[V]):
         self.current_item = None
         self.finished = True
 
+        # Flush any remaining unrendered intervals so the final progress
+        # display shows the correct position and percentage.
+        if self._completed_intervals:
+            self.make_step(self._completed_intervals)
+            self.render_progress()
+            self._completed_intervals = 0
+
     def generator(self) -> cabc.Iterator[V]:
         """Return a generator which yields the items added to the bar
         during construction, and updates the progress bar *after* the
