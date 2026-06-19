@@ -196,6 +196,13 @@ def prompt(
         text, prompt_suffix, show_default, default, show_choices, type
     )
 
+    from ._compat import should_strip_ansi
+
+    if should_strip_ansi(
+        sys.stderr if err else sys.stdout, resolve_color_default(None)
+    ):
+        prompt = strip_ansi(prompt)
+
     if confirmation_prompt:
         if confirmation_prompt is True:
             confirmation_prompt = _("Repeat for confirmation")
@@ -266,6 +273,13 @@ def confirm(
         show_default,
         "y/n" if default is None else ("Y/n" if default else "y/N"),
     )
+
+    from ._compat import should_strip_ansi
+
+    if should_strip_ansi(
+        sys.stderr if err else sys.stdout, resolve_color_default(None)
+    ):
+        prompt = strip_ansi(prompt)
 
     while True:
         try:
